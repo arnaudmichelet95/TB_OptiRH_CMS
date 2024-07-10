@@ -350,8 +350,7 @@ pyrightconfig.json
 
 # *** nLPD-app custom rules ***
 # The lib folder of the Flutter application must be kept in the source control.
-!nlpd_flutter/lib/
+!optirh_flutter/lib/
 # The python virtual environment must be kept out of the source control.
-nlpd_env/
-# FTP Server
-nlpd_ftp/
+optirh_env/
+
