@@ -11,15 +11,15 @@ void main() {
 class AppOptiRH extends StatelessWidget {
   const AppOptiRH({super.key});
 
-  static const primary = Color(0xFFBCC1EC); //card background color
+  static const primary = Color.fromARGB(255, 110, 116, 163); //card background color
   static const secondary = Color(0xFF676664);
   static const tertiary = Color(0xFF1B8989);
   static const error = Color(0xFF942A3D); // error color
-  static const surface = Color(0xFFEEEEEE); // backgroud color
+  static const surface = Color.fromARGB(255, 239, 248, 223); // backgroud color
   static const onSurface = Color(0xFF000000); // text color on the background
-  static const shadow = Color(0xFF999999);
-  static const onPrimaryContainer = Color(0xFFFFFFF3); // button text color
-  static const secondaryContainer = Color(0xFFD9D9D9); // text field color
+  static const shadow = Color.fromARGB(255, 84, 94, 68);
+  static const onPrimaryContainer = Color.fromARGB(255, 157, 177, 154); // button text color
+  static const secondaryContainer = Color.fromARGB(255, 217, 217, 217); // text field color
 
   @override
   Widget build(BuildContext context) {

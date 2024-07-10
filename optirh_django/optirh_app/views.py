@@ -23,4 +23,4 @@ def simplifyTranslate_view(request):
     # Collect the response chunks into a single string
     full_response = ''.join(response)
 
-    return DRFResponse({'response': full_response}, status=status.HTTP_200_OK)
+    return DRFResponse({'response': full_response}, status=status.HTTP_200_OK, content_type="application/json; chartset=utf-8")

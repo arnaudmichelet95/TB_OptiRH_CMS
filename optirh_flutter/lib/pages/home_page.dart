@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:optirh_flutter/helpers/app_localization.dart';
 import 'dart:convert';
 
 class HomePage extends StatefulWidget {
@@ -32,9 +33,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalization loc = AppLocalization.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Simplify and Translate Text'),
+        title: Text(loc.getTranslation("TITLE_HOMEPAGE")),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -42,8 +44,8 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             TextField(
               controller: _textController,
-              decoration: const InputDecoration(
-                labelText: 'Text',
+              decoration: InputDecoration(
+                labelText: loc.getTranslation("TEXT_TO_SUBMIT"),
                 border: OutlineInputBorder(),
               ),
               maxLines: null,
@@ -51,15 +53,15 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 16.0),
             TextField(
               controller: _languageController,
-              decoration: const InputDecoration(
-                labelText: 'Language',
+              decoration: InputDecoration(
+                labelText: loc.getTranslation("TEXT_LANGUAGE"),
                 border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: _simplifyAndTranslate,
-              child: const Text('Submit'),
+              child: Text(loc.getTranslation("TEXT_SUBMIT")),
             ),
             const SizedBox(height: 16.0),
             Expanded(
@@ -87,7 +89,7 @@ Future<String> simplifyAndTranslateText(String text, String language) async {
   );
 
   if (response.statusCode == 200) {
-    final responseJson = jsonDecode(response.body);
+    final responseJson = jsonDecode(utf8.decode(response.bodyBytes));
     return responseJson['response'];
   } else {
     throw Exception('Failed to simplify and translate text');

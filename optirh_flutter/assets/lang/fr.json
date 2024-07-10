@@ -25,4 +25,13 @@
     "PROFILE": "Profil",
     "DOCS": "Documents",
     "CHECK_LIST": "Check-list",
-    "WELCOME": "Bienvenue"}
+    "WELCOME": "Bienvenue",
+
+    "TITLE_HOMEPAGE": "Vulgarise et traduis ton texte",
+    "TEXT_TO_SUBMIT": "Texte",
+    "TEXT_LANGUAGE": "Langue",
+    "TEXT_SUBMIT": "Soumettre le texte"
+    
+
+}
+

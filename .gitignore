@@ -348,7 +348,7 @@ pyrightconfig.json
 # End of https://www.toptal.com/developers/gitignore/api/python,flutter,django,visualstudiocode
 
 
-# *** nLPD-app custom rules ***
+# *** OptiRH-app custom rules ***
 # The lib folder of the Flutter application must be kept in the source control.
 !optirh_flutter/lib/
 # The python virtual environment must be kept out of the source control.
