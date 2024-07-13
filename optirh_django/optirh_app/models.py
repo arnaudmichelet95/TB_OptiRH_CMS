@@ -1,5 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
-class Caregiver (models.Model):
-    name = models.CharField(max_length=80)
-    age = models.IntegerField()
+class Account (AbstractUser):
+    pass
+
+class Role (models.Model):
+    name = models.CharField(max_length=50)
+

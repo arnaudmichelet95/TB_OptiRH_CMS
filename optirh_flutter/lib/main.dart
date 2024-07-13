@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:optirh_flutter/helpers/globs.dart';
+import 'package:optirh_flutter/pages/login_page.dart';
 import 'package:provider/provider.dart';
 import 'package:optirh_flutter/helpers/app_localization.dart';
 import 'package:optirh_flutter/pages/home_page.dart';
@@ -10,16 +11,14 @@ void main() {
 
 class AppOptiRH extends StatelessWidget {
   const AppOptiRH({super.key});
-
-  static const primary = Color.fromARGB(255, 110, 116, 163); //card background color
+  static const primary = Color(0xFFBCC1EC);
   static const secondary = Color(0xFF676664);
   static const tertiary = Color(0xFF1B8989);
-  static const error = Color(0xFF942A3D); // error color
-  static const surface = Color.fromARGB(255, 239, 248, 223); // backgroud color
-  static const onSurface = Color(0xFF000000); // text color on the background
-  static const shadow = Color.fromARGB(255, 84, 94, 68);
-  static const onPrimaryContainer = Color.fromARGB(255, 157, 177, 154); // button text color
-  static const secondaryContainer = Color.fromARGB(255, 217, 217, 217); // text field color
+  static const error = Color(0xFF942A3D);
+  static const surface = Color.fromARGB(255, 250, 250, 250);
+  static const onSurface =Color.fromARGB(255, 0, 0, 0);
+  static const shadow = Color.fromARGB(255, 221, 212, 212);
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +53,7 @@ class AppOptiRH extends StatelessWidget {
               tertiary: tertiary,
               onSurface: onSurface,
               shadow: shadow,
-              onPrimaryContainer: onPrimaryContainer,
-              secondaryContainer: secondaryContainer
+
             ),
              textTheme: const TextTheme(
             displaySmall: TextStyle(
@@ -84,7 +82,7 @@ class AppOptiRH extends StatelessWidget {
             )),
             useMaterial3: true,
           ),
-          home: const HomePage(),
+          home: const LoginPage(),
         );
       },
     );

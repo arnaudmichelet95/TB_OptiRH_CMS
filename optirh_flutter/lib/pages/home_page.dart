@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:optirh_flutter/helpers/app_localization.dart';
 import 'dart:convert';
+import 'package:optirh_flutter/helpers/account_manager.dart';
+import 'package:optirh_flutter/pages/login_page.dart';
+import 'package:optirh_flutter/widgets/simple_snack_bar.dart';
+import 'package:optirh_flutter/widgets/button_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,6 +15,31 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  
+  void _handleLogout() async {
+    AccountManager manager = AccountManager.getInstance();
+    AppLocalization loc = AppLocalization.of(context);
+    bool ok = await manager.logout();
+    if (ok) {
+      _showLogoutSnackbar(loc.getTranslation("LOGOUT_SUCCESS_MSG"), true);
+    } else {
+      _showLogoutSnackbar(loc.getTranslation("LOGOUT_ERR_MSG"), false);
+    }
+  }
+
+  /// Shows the logout snackbar
+  void _showLogoutSnackbar(String message, bool deleteRoutes) {
+    SimpleSnackBar.showSnackBar(context, message);
+    if (deleteRoutes) {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) => const LoginPage(),
+        ),
+        (route) => false,
+      );
+    }
+  }
+
   final TextEditingController _textController = TextEditingController();
   final TextEditingController _languageController = TextEditingController();
   String _result = '';
@@ -37,6 +66,15 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(loc.getTranslation("TITLE_HOMEPAGE")),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            child: ButtonWidget(
+              text: loc.getTranslation("LOGOUT"),
+              action: _handleLogout,
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -46,7 +84,7 @@ class _HomePageState extends State<HomePage> {
               controller: _textController,
               decoration: InputDecoration(
                 labelText: loc.getTranslation("TEXT_TO_SUBMIT"),
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
               ),
               maxLines: null,
             ),
@@ -55,7 +93,7 @@ class _HomePageState extends State<HomePage> {
               controller: _languageController,
               decoration: InputDecoration(
                 labelText: loc.getTranslation("TEXT_LANGUAGE"),
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16.0),

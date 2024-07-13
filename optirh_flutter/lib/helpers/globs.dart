@@ -84,4 +84,44 @@ class Regex {
 class Globs {
   /// Application font family
   static const String appFontFamily = "Montserrat";
+
+  /// Authentication token shared preferences key
+  static const String authTokenKey = "auth_token";
+
+  /// Buttons vertical padding
+  static const double btnVertPadding = 10;
+
+  /// Buttons horizontal padding
+  static const double btnHorzPadding = 20;
+
+  /// Application default border width
+  static const double appDefaultBorderWidth = 2;
+
+  /// Application default padding
+  static const double appDefaultPadding = 8;
+
+  /// Rectangular container width factor
+  static const double rectContWidthFactor = .4;
+
+  /// Rectangular container height factor
+  static const double rectContHeightFactor = .7;
+
+  /// Application snack bar duration (in seconds)
+  static const int appSnackBarDurationInSec = 3;
+
+  /// Medium sized box for vertical spacing
+  static const SizedBox mediumSizedBox = SizedBox(height: 20);
+
+  /// Small sized box for vertical spacing
+  static const SizedBox smallSizedBox = SizedBox(height: 10);
+
+  /// Average text field size
+  static const double averageWidth = 750;
+
+  /// Small text field size
+  static const double smallWidth = 500;
+
+  /// Average text field height
+  static const double averageHeight = 135;
+
 }

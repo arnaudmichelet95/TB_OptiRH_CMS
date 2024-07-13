@@ -16,6 +16,7 @@ class Language {
   static List<Language> langList() {
     return <Language>[
       const Language("Français", "fr"),
+      const Language("Deutsch", "de"),
     ];
   }
 }

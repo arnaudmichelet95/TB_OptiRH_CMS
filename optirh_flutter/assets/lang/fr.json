@@ -1,6 +1,7 @@
 {
     "HOME": "Accueil",
     "LOGIN": "Connexion",
+    "LOGOUT": "Se déconnecter",
     "SIGNUP": "Créer un compte",
     "EMAIL": "E-mail",
     "PASS": "Mot de passe",
