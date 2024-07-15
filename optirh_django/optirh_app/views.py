@@ -84,7 +84,8 @@ def logout_view(request):
 
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def simplifyTranslate_view(request):
     text = request.data.get('text')
     language = request.data.get('language')
@@ -93,9 +94,7 @@ def simplifyTranslate_view(request):
         return DRFResponse({'error': 'Text and language are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
     handler = SimplifyTranslateHandler()
-    response = handler.simplify_translate_text(language=language, text=text)
+    account_id = request.user.id
+    vulgarization, term_explanation = handler.simplify_translate_text(language=language, text=text, account_id=account_id)
 
-    # Collect the response chunks into a single string
-    full_response = ''.join(response)
-
-    return DRFResponse({'response': full_response}, status=status.HTTP_200_OK, content_type="application/json; chartset=utf-8")
+    return DRFResponse({'vulgarization': vulgarization, 'term_explanation': term_explanation}, status=status.HTTP_200_OK, content_type="application/json; charset=utf-8")

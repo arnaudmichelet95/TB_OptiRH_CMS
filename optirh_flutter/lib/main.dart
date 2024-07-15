@@ -3,7 +3,6 @@ import 'package:optirh_flutter/helpers/globs.dart';
 import 'package:optirh_flutter/pages/login_page.dart';
 import 'package:provider/provider.dart';
 import 'package:optirh_flutter/helpers/app_localization.dart';
-import 'package:optirh_flutter/pages/home_page.dart';
 
 void main() {
   runApp(const AppOptiRH());

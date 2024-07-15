@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:optirh_flutter/helpers/app_localization.dart';
-import 'dart:convert';
 import 'package:optirh_flutter/helpers/account_manager.dart';
 import 'package:optirh_flutter/pages/login_page.dart';
 import 'package:optirh_flutter/widgets/simple_snack_bar.dart';
 import 'package:optirh_flutter/widgets/button_widget.dart';
+import 'package:optirh_flutter/services/simplify_translate_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,7 +14,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  
   void _handleLogout() async {
     AccountManager manager = AccountManager.getInstance();
     AppLocalization loc = AppLocalization.of(context);
@@ -42,20 +40,36 @@ class _HomePageState extends State<HomePage> {
 
   final TextEditingController _textController = TextEditingController();
   final TextEditingController _languageController = TextEditingController();
-  String _result = '';
+  String _vulgarization = '';
+  String _termExplanation = '';
+  String _errorMessage = '';
+
+  final SimplifyTranslateService _service = SimplifyTranslateService();
 
   Future<void> _simplifyAndTranslate() async {
+    if (_textController.text.isEmpty || _languageController.text.isEmpty) {
+      setState(() {
+        _errorMessage = 'Please fill in both fields';
+      });
+      return;
+    }
+    setState(() {
+      _errorMessage = '';
+    });
+
     try {
-      final result = await simplifyAndTranslateText(
+      final result = await _service.simplifyAndTranslateText(
         _textController.text,
         _languageController.text,
       );
       setState(() {
-        _result = result;
+        _vulgarization = result['vulgarization'] ?? 'No vulgarization available';
+        _termExplanation = result['term_explanation'] ?? 'No term explanation available';
       });
     } catch (e) {
       setState(() {
-        _result = 'Error: $e';
+        _vulgarization = 'Error: $e';
+        _termExplanation = 'Error: $e';
       });
     }
   }
@@ -84,7 +98,8 @@ class _HomePageState extends State<HomePage> {
               controller: _textController,
               decoration: InputDecoration(
                 labelText: loc.getTranslation("TEXT_TO_SUBMIT"),
-                border: const OutlineInputBorder(),
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.text_fields),
               ),
               maxLines: null,
             ),
@@ -93,43 +108,83 @@ class _HomePageState extends State<HomePage> {
               controller: _languageController,
               decoration: InputDecoration(
                 labelText: loc.getTranslation("TEXT_LANGUAGE"),
-                border: const OutlineInputBorder(),
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.language),
               ),
             ),
             const SizedBox(height: 16.0),
-            ElevatedButton(
+            ElevatedButton.icon(
               onPressed: _simplifyAndTranslate,
-              child: Text(loc.getTranslation("TEXT_SUBMIT")),
+              icon: Icon(Icons.translate),
+              label: Text(loc.getTranslation("TEXT_SUBMIT")),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                textStyle: TextStyle(fontSize: 16),
+              ),
             ),
+            if (_errorMessage.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Text(
+                  _errorMessage,
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
             const SizedBox(height: 16.0),
             Expanded(
               child: SingleChildScrollView(
-                child: Text(_result),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      child: Card(
+                        elevation: 4,
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                loc.getTranslation("VULGARIZATION"),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              const SizedBox(height: 8.0),
+                              Text(_vulgarization),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      child: Card(
+                        elevation: 4,
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                loc.getTranslation("TERM_EXPLANATION"),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              const SizedBox(height: 8.0),
+                              Text(_termExplanation),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
         ),
       ),
     );
-  }
-}
-
-Future<String> simplifyAndTranslateText(String text, String language) async {
-  final response = await http.post(
-    Uri.parse('http://127.0.0.1:8000/optirh_app/api/simplifytranslate/'),  // Ensure this URL is correct
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(<String, String>{
-      'text': text,
-      'language': language,
-    }),
-  );
-
-  if (response.statusCode == 200) {
-    final responseJson = jsonDecode(utf8.decode(response.bodyBytes));
-    return responseJson['response'];
-  } else {
-    throw Exception('Failed to simplify and translate text');
   }
 }
