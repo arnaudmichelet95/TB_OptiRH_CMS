@@ -1,47 +1,25 @@
-import subprocess
-import json
+import ollama
 
 class llm_request_handler:
     """
     Handle requests to the Llama3 model hosted on an Ollama server.
     """
-    
-    def __init__(self, model_name='llama3', adapter_name='llama3-8b-healthcare'):
+
+    def __init__(self, model_name='llama3'): 
         self.model_name = model_name
-        self.adapter_name = adapter_name
 
     def generate_response(self, prompt):
         """
         Generate a response from the Llama3 model based on the user's prompt.
         The response is returned as a stream of chunks.
         """
-        command = [
-            "ollama", "run",
-            self.model_name,
-            "--adapter", self.adapter_name,
-            "--prompt", prompt,
-            "--max-tokens", "100",
-            "--temperature", "0.7",
-            "--top-p", "0.9"
-        ]
-
-        result = subprocess.run(command, capture_output=True, text=True, shell=True)
-
-        if result.returncode == 0:
-            response = result.stdout.strip()
-            for chunk in self._stream_response(response):
-                yield chunk
-        else:
-            raise Exception(f"Error {result.returncode}: {result.stderr.strip()}")
-
-    def _stream_response(self, response):
-        """
-        Simulate streaming response by yielding chunks of the response.
-        """
-        chunk_size = 50
-        for i in range(0, len(response), chunk_size):
-            yield response[i:i + chunk_size]
-
+        stream = ollama.chat(
+            model=self.model_name,
+            messages=[{'role': 'user', 'content': prompt}],
+            stream=True,
+        )
+        for chunk in stream:
+            yield chunk['message']['content']
 
 # import torch
 # from transformers import AutoModelForCausalLM, AutoTokenizer
