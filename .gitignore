@@ -353,4 +353,6 @@ pyrightconfig.json
 !optirh_flutter/lib/
 # The python virtual environment must be kept out of the source control.
 optirh_env/
+optirh_django/Library
+optirh_django/share
 
