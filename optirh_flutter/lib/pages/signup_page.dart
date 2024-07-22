@@ -4,7 +4,7 @@ import 'package:optirh_flutter/helpers/app_localization.dart';
 import 'package:optirh_flutter/helpers/forms_helpers.dart';
 import 'package:optirh_flutter/helpers/globs.dart';
 import 'package:optirh_flutter/helpers/validation_helpers.dart';
-import 'package:optirh_flutter/pages/home_page.dart';
+import 'package:optirh_flutter/pages/vulgarization_page.dart';
 import 'package:optirh_flutter/pages/login_page.dart';
 import 'package:optirh_flutter/widgets/button_widget.dart';
 import 'package:optirh_flutter/widgets/labelled_text_field_widget.dart';
@@ -67,7 +67,7 @@ class _SignUpPageState extends State<SignUpPage> {
     // Remove all routes to prevent the user from getting back to the signup page and get back to the home page
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
-          builder: (context) => const HomePage(),
+          builder: (context) => const VulgarizationPage(),
         ),
         (route) => false);
   }

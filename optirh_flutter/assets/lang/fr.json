@@ -28,20 +28,31 @@
     "CHECK_LIST": "Check-list",
     "WELCOME": "Bienvenue",
 
-    "TITLE_HOMEPAGE": "Vulgarise et traduis ton texte",
+    "TAB_VULGA": "Vulgarisation",
+    "TAB_SUM": "Résumé",
+
+    "TITLE_VULGARIZATION": "Vulgarise et traduis ton texte",
     "TEXT_TO_SUBMIT": "Texte",
     "TEXT_LANGUAGE": "Langue",
     "TEXT_SUBMIT": "Soumettre le texte",
+    "VULGARIZATION": "Vulgarisation du texte:", 
+    "TERM_EXPLANATION": "Explication des termes:",
+
+    "TITLE_SUM_PAGE": "Sélectionne un dossier patient pour le résumer",
+    "PICK_DOCX": "Sélectionne un fichier .docx",
+    "SUM_FILE": "Résumer le fichier",
+    "SUMMED_FILE": "Résumé:",
 
     "SIGNUP_SUCCESS_MSG": "Compte EMAIL créé avec succès, bienvenue !",
     "LOGIN_SUCCESS_MSG": "Connexion établie avec le compte EMAIL, bienvenue à nouveau !",
     "SIGNUP_ERR_MSG": "Impossible de se créer un compte avec les identifiants saisis. Veuillez réessayer.",
     "LOGIN_ERR_MSG": "Impossible de se connecter avec les identifiants saisis. Veuillez réessayer.",
     "LOGOUT_SUCCESS_MSG": "Déconnexion réussie.",
-    "LOGOUT_ERR_MSG": "Déconnexion échouée, veuillez réessayer.",
+    "LOGOUT_ERR_MSG": "Déconnexion échouée, veuillez réessayer."
 
-    "VULGARIZATION": "Vulgarisation du texte:", 
-    "TERM_EXPLANATION": "Explication des termes:"
+
+
+
     
 
 }

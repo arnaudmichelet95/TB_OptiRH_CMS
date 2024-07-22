@@ -8,7 +8,8 @@ tzdata==2024.1
 python-decouple==3.8
 psycopg2-binary==2.9.9
 ollama==0.2.1
-torch
-transformers
-peft
-setuptools
+python-docx==1.1.2
+torch==2.3.1
+transformers==4.42.4
+peft==0.11.1
+setuptools==71.0.4

@@ -15,9 +15,8 @@ class AppOptiRH extends StatelessWidget {
   static const tertiary = Color(0xFF1B8989);
   static const error = Color(0xFF942A3D);
   static const surface = Color.fromARGB(255, 250, 250, 250);
-  static const onSurface =Color.fromARGB(255, 0, 0, 0);
+  static const onSurface = Color.fromARGB(255, 0, 0, 0);
   static const shadow = Color.fromARGB(255, 221, 212, 212);
-
 
   @override
   Widget build(BuildContext context) {
@@ -52,33 +51,33 @@ class AppOptiRH extends StatelessWidget {
               tertiary: tertiary,
               onSurface: onSurface,
               shadow: shadow,
-
             ),
-             textTheme: const TextTheme(
-            displaySmall: TextStyle(
-              fontFamily: Globs.appFontFamily,
-              fontSize: 16,
+            textTheme: const TextTheme(
+              displaySmall: TextStyle(
+                fontFamily: Globs.appFontFamily,
+                fontSize: 16,
+              ),
+              displayMedium: TextStyle(
+                fontFamily: Globs.appFontFamily,
+                fontSize: 20,
+              ),
+              displayLarge: TextStyle(
+                fontFamily: Globs.appFontFamily,
+                fontSize: 24,
+              ),
+              titleSmall: TextStyle(
+                fontFamily: Globs.appFontFamily,
+                fontSize: 16,
+              ),
+              titleMedium: TextStyle(
+                fontFamily: Globs.appFontFamily,
+                fontSize: 26,
+              ),
+              titleLarge: TextStyle(
+                fontFamily: Globs.appFontFamily,
+                fontSize: 30,
+              ),
             ),
-            displayMedium: TextStyle(
-              fontFamily: Globs.appFontFamily,
-              fontSize: 20,
-            ),
-            displayLarge: TextStyle(
-              fontFamily: Globs.appFontFamily,
-              fontSize: 24,
-            ),
-            titleSmall: TextStyle(
-              fontFamily: Globs.appFontFamily,
-              fontSize: 16,
-            ),
-            titleMedium: TextStyle(
-              fontFamily: Globs.appFontFamily,
-              fontSize: 26,
-            ),
-            titleLarge: TextStyle(
-              fontFamily: Globs.appFontFamily,
-              fontSize: 30,
-            )),
             useMaterial3: true,
           ),
           home: const LoginPage(),

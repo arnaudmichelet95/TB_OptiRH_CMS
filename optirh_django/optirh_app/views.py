@@ -9,11 +9,13 @@ from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import authentication_classes, permission_classes
 from .simplify_translate import SimplifyTranslateHandler
+from .summarize_pf import SummarizePfHandler
 from .serializers import AccountSerializer
 from .models import Account
 import logging
+import time
 
-logging.basicConfig(level = logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 def home(request):
@@ -28,13 +30,19 @@ def login_view(request):
     uname = request.data.get('username')
     pwd = request.data.get('password')
 
+    start_time = time.time()
     user = authenticate(username=uname, password=pwd)
+    auth_time = time.time() - start_time
+    logger.debug(f"Authentication time: {auth_time:.2f} seconds")
 
     if user is not None:
+        login_start_time = time.time()
         # Log in the user and create the token to allow them to access the different pages
         login(user=user, request=request)
         token, created = Token.objects.get_or_create(user=user)
         serializer = AccountSerializer(user)
+        login_time = time.time() - login_start_time
+        logger.debug(f"Login and token generation time: {login_time:.2f} seconds")
 
         return Response({'message': 'Authentication successful', 'user': serializer.data, 'token': token.key}, status=status.HTTP_200_OK)
     else:
@@ -42,21 +50,26 @@ def login_view(request):
 
 
 @api_view(['POST'])
-@permission_classes(([AllowAny]))
+@permission_classes([AllowAny])
 def register_view(request):
     """
     Sign up view, used to create a new account on the application
     """
-    # Get username and password from request
     uname = request.data.get('username')
     pwd = request.data.get('password')
 
     try:
-        # Create the user and log them in, then create the token to allow them to access the pages
+        start_time = time.time()
         user = Account.objects.create_user(username=uname, email=uname, password=pwd)
+        login_time = time.time() - start_time
+        logger.debug(f"User creation time: {login_time:.2f} seconds")
+
+        token_start_time = time.time()
         login(user=user, request=request)
         token, created = Token.objects.get_or_create(user=user)
         serializer = AccountSerializer(user)
+        token_time = time.time() - token_start_time
+        logger.debug(f"Login and token generation time: {token_time:.2f} seconds")
 
         return Response({'message': 'User registration successful', 'user': serializer.data, 'token': token.key}, status=status.HTTP_201_CREATED)
     except Exception as e:
@@ -71,12 +84,14 @@ def logout_view(request):
     Logout view, used to log out a connected account
     """
     try:
-        # Delete the token and logout the user
+        start_time = time.time()
         user_token = Token.objects.get(user=request.user)
         user_token.delete()
         logout(request=request)
+        logout_time = time.time() - start_time
+        logger.debug(f"Logout time: {logout_time:.2f} seconds")
 
-        return Response({'message':'Logout successful'}, status=status.HTTP_200_OK)
+        return Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
     except Token.DoesNotExist:
         return Response({'message': 'Token does not exist'}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
@@ -95,6 +110,37 @@ def simplifyTranslate_view(request):
 
     handler = SimplifyTranslateHandler()
     account_id = request.user.id
+
+    start_time = time.time()
     vulgarization, term_explanation = handler.simplify_translate_text(language=language, text=text, account_id=account_id)
+    processing_time = time.time() - start_time
+    logger.debug(f"Simplify and translate processing time: {processing_time:.2f} seconds")
 
     return DRFResponse({'vulgarization': vulgarization, 'term_explanation': term_explanation}, status=status.HTTP_200_OK, content_type="application/json; charset=utf-8")
+
+
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def summarize_view(request):
+    try:
+        if not request.FILES.get('file'):
+            return DRFResponse({'error': 'File is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        language = request.data.get('language')
+        if not language:
+            return DRFResponse({'error': 'Language is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        uploaded_file = request.FILES['file']
+        summarizer = SummarizePfHandler(uploaded_file)
+
+        start_time = time.time()
+        summary = summarizer.summarize_pf_from_file(language)
+        processing_time = time.time() - start_time
+        logger.debug(f"Summarize processing time: {processing_time:.2f} seconds")
+
+        return DRFResponse({'summary': summary}, status=status.HTTP_200_OK, content_type="application/json; charset=utf-8")
+
+    except Exception as e:
+        logger.error(f"Error processing summarize request: {e}")
+        return DRFResponse({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
