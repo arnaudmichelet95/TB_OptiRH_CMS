@@ -11,7 +11,9 @@ from rest_framework.decorators import authentication_classes, permission_classes
 from .simplify_translate import SimplifyTranslateHandler
 from .summarize_pf import SummarizePfHandler
 from .serializers import AccountSerializer
+from .serializers import LlmRequestSerializer
 from .models import Account
+from .models import Llm_request
 import logging
 import time
 
@@ -124,23 +126,30 @@ def simplifyTranslate_view(request):
 @permission_classes([IsAuthenticated])
 def summarize_view(request):
     try:
-        if not request.FILES.get('file'):
+        if not request.FILES.getlist('files'):
             return DRFResponse({'error': 'File is required.'}, status=status.HTTP_400_BAD_REQUEST)
-
+        
         language = request.data.get('language')
         if not language:
             return DRFResponse({'error': 'Language is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        uploaded_file = request.FILES['file']
-        summarizer = SummarizePfHandler(uploaded_file)
-
-        start_time = time.time()
-        summary = summarizer.summarize_pf_from_file(language)
-        processing_time = time.time() - start_time
-        logger.debug(f"Summarize processing time: {processing_time:.2f} seconds")
+        uploaded_files = request.FILES.getlist('files')
+        summarizer = SummarizePfHandler(uploaded_files)
+        summary = summarizer.summarize_pf_from_files(language)
 
         return DRFResponse({'summary': summary}, status=status.HTTP_200_OK, content_type="application/json; charset=utf-8")
-
+    
     except Exception as e:
-        logger.error(f"Error processing summarize request: {e}")
+        logging.error(f"Error processing summarize request: {str(e)}")
         return DRFResponse({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def request_history_view(request):
+    user = request.user
+    requests = Llm_request.objects.filter(fk_account=user).order_by('-id')
+    serializer = LlmRequestSerializer(requests, many=True)
+
+    return DRFResponse(serializer.data, status=status.HTTP_200_OK, content_type="application/json; charset=utf-8")

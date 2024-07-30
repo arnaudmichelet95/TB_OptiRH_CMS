@@ -37,11 +37,15 @@
     "TEXT_SUBMIT": "Soumettre le texte",
     "VULGARIZATION": "Vulgarisation du texte:", 
     "TERM_EXPLANATION": "Explication des termes:",
+    "HISTORY": "Historique",
+    "NEW": "Nouvelle page",
+    "OPEN_HISTORY_DRAWER": "Ouvrir l'historique",
 
     "TITLE_SUM_PAGE": "Sélectionne un dossier patient pour le résumer",
     "PICK_DOCX": "Sélectionne un fichier .docx",
     "SUM_FILE": "Résumer le fichier",
     "SUMMED_FILE": "Résumé:",
+    "NO_FILE_SELECTED": "Aucun fichier sélectionné",
 
     "SIGNUP_SUCCESS_MSG": "Compte EMAIL créé avec succès, bienvenue !",
     "LOGIN_SUCCESS_MSG": "Connexion établie avec le compte EMAIL, bienvenue à nouveau !",

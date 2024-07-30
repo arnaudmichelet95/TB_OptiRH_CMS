@@ -6,7 +6,7 @@ import 'package:optirh_flutter/helpers/globs.dart';
 class LabelledTextFieldWidget extends StatefulWidget {
   /// Creates a new LabelledTextFieldWidget
   const LabelledTextFieldWidget({
-    Key? key,
+    super.key,
     required this.label,
     required this.hint,
     required this.controller,
@@ -14,8 +14,7 @@ class LabelledTextFieldWidget extends StatefulWidget {
     this.validateInput,
     this.required = false,
     int? maxLines,
-  }) : maxLines = isPassword ? 1 : maxLines ?? 1, // Ensure maxLines is set correctly
-       super(key: key);
+  }) : maxLines = isPassword ? 1 : maxLines ?? 1;
 
   final String label;
   final String hint;

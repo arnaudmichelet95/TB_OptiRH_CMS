@@ -1,0 +1,65 @@
+Données personnelles:
+Nom du patient: John Doe
+Sexe: Masculin
+N°AVS: 756.xxxx.xxxx.xx
+Date de naissance: 10.10.1922
+Adresse: Rue du CMS 12, 1950 Sion
+
+Cas:
+M. John Doe est un cas standard qui a été admis le dd.mm.yyyy suite à un accident qui a nécessité une opération de son bras droit. Il a besoin d'une assistance pour les soins de base et pour le ménage. M. Doe vit seul et n'a jamais vécu dans des résidences protégées d'aucune sorte.
+
+Réseau social: 
+- Référent: Jean Registre, tel: 027 xxx xx xx
+- Médecin traitant: Jean Bon, tel: 079 xxx xx xx
+
+Informations générales:
+M. John Doe est pris en charge pour de l'aide au soins d'hygiène et d'habillage ainsi que pour le changement des pansements liés à son opération. Ses repas lui sont commandé à la Main Groumande. M. Doe a des exercices à faire pour retrouver la mobilité de son bras.
+
+Allergies:
+- Aninmal: poil de chat
+- Médicament: Morhpine HCL, Tramadol 25MG gouttes, ZOLPIDEM Axapharm cpr pell 10 mg
+
+Historique médical:
+
+John Doe a subi un pontage coronarien. Il présente plusieurs tassements ostéoporotiques atraumatiques avec des douleurs invalidantes. Il a des prothèses totales de hanche bilatérales, avec une révision totale de la prothèse de la hanche gauche en 2019. Ancien alcoolique selon son médecin traitant, il affirme ne plus boire actuellement. Il souffre de carences en calcium, vitamine D et vitamine B12. 
+
+Médication: 
+- Voie orale:
+    - Calcimagon D3 1000/800 mg	1-1/j
+    - DISTRANEURIN caps	2/j
+    - LEVOCETIRIZINE Sandoz cpr pell 5 mg 1/j	
+    - MIRTAZAPIN Mepha cpr pell 30 mg 1/j
+- Injection:
+    - PROLIA 60 mg/ml protect aiguille 1/j
+
+    Format:
+            Données personnelles:
+            - Prénom: "Prénom"
+            - Nom : "Nom"
+            - Sexe: "Sexe"
+            - N°AVS: "N°AVS"
+            - Date de naissance: "Date de naissance"
+            - Adresse: "Adresse"
+
+            Cas:
+            ""Complete sentence describing the case""
+
+            Réseau social:
+            - Référent: "Référent", tel: "Tel référent"
+            - Médecin traitant: "Nom du médecin traitant", tel: "Tel médecin"
+
+            Informations générales:
+            "Complete sentence"
+
+            Allergies:
+            - "List of allergies"
+
+            Historique médical:
+            "Complete senetence describing the "Diagnostics""
+
+            Médication:
+            - Voie orale:
+                - "List of medicaments"
+            - Injection:
+                - "Médicaments injection"""
+            )s

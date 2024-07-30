@@ -20,10 +20,9 @@ class LlmRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Llm_request
         fields = [
-            'id',
+            'request_name',
+            'original_text',
             'vulgarization',
             'term_explanation',
-            'trans_original',
-            'trans_simplified',
             'account'
         ]

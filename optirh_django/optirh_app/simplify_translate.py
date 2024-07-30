@@ -26,7 +26,7 @@ class SimplifyTranslateHandler:
         response_str = ''.join(response)
         vulgarization, term_explanation, request_name = self.parse_response(response_str)
 
-        self.insert_parsed_response_into_database(account_id, vulgarization, term_explanation, request_name)
+        self.insert_parsed_response_into_database(account_id, vulgarization, term_explanation, request_name, text)
     
         return vulgarization, term_explanation
     
@@ -56,7 +56,7 @@ class SimplifyTranslateHandler:
         return vulgarization, term_explanation, request_name
     
     
-    def insert_parsed_response_into_database(self, account_id, vulgarization, term_explanation, request_name):
+    def insert_parsed_response_into_database(self, account_id, vulgarization, term_explanation, request_name, original_text):
         """
         Insert the simplified text and term explanations into the database using Django ORM.
         """
@@ -66,8 +66,7 @@ class SimplifyTranslateHandler:
                 Llm_request.objects.create(
                     vulgarization=vulgarization,
                     term_explanation=term_explanation,
-                    trans_original='Original text here',  # Adjust as needed
-                    trans_simplified='Simplified text here',  # Adjust as needed
+                    original_text=original_text,
                     fk_account=account,
                     request_name=request_name
                 )

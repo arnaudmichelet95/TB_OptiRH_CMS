@@ -10,33 +10,31 @@ class SummarizePage extends StatefulWidget {
 }
 
 class _SummarizePageState extends State<SummarizePage> {
-  String? _fileName;
-  List<int>? _fileBytes;
+  final List<Map<String, dynamic>> _filesData = [];
   String _summary = '';
   String _errorMessage = '';
   final TextEditingController _languageController = TextEditingController();
 
   final SummarizePfService _service = SummarizePfService();
 
-  Future<void> _pickFile() async {
-    var fileData = await _service.pickFile();
-    if (fileData != null) {
+  Future<void> _pickFiles() async {
+    var filesData = await _service.pickFiles();
+    if (filesData != null) {
       setState(() {
-        _fileName = fileData['fileName'];
-        _fileBytes = fileData['fileBytes'];
+        _filesData.addAll(filesData);
         _errorMessage = ''; // Clear any previous errors
       });
     } else {
       setState(() {
-        _errorMessage = 'No file selected or error picking file';
+        _errorMessage = 'No files selected or error picking files';
       });
     }
   }
 
-  Future<void> _summarizeFile() async {
-    if (_fileName == null || _fileBytes == null || _languageController.text.isEmpty) {
+  Future<void> _summarizeFiles() async {
+    if (_filesData.isEmpty || _languageController.text.isEmpty) {
       setState(() {
-        _errorMessage = 'Please select a file and fill in the language field';
+        _errorMessage = 'Please select files and fill in the language field';
       });
       return;
     }
@@ -45,7 +43,7 @@ class _SummarizePageState extends State<SummarizePage> {
     });
 
     try {
-      String summary = await _service.summarizeFile(_fileName!, _fileBytes!, _languageController.text);
+      String summary = await _service.summarizeFiles(_filesData, _languageController.text);
       setState(() {
         _summary = summary;
       });
@@ -68,28 +66,32 @@ class _SummarizePageState extends State<SummarizePage> {
         child: Column(
           children: <Widget>[
             ElevatedButton(
-              onPressed: _pickFile,
+              onPressed: _pickFiles,
               child: Text(loc.getTranslation("PICK_DOCX")),
             ),
             const SizedBox(height: 20),
-            Text(_fileName ?? 'No file selected'),
+            _filesData.isNotEmpty
+                ? Column(
+                    children: _filesData.map((file) => Text(file['fileName'])).toList(),
+                  )
+                : Text(loc.getTranslation("NO_FILE_SELECTED")),
             const SizedBox(height: 20),
             TextField(
               controller: _languageController,
               decoration: InputDecoration(
                 labelText: loc.getTranslation("TEXT_LANGUAGE"),
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.language),
+                border: const OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.language),
               ),
             ),
             const SizedBox(height: 20),
             ElevatedButton.icon(
-              onPressed: _summarizeFile,
-              icon: Icon(Icons.summarize),
+              onPressed: _summarizeFiles,
+              icon: const Icon(Icons.summarize),
               label: Text(loc.getTranslation('SUM_FILE')),
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                textStyle: TextStyle(fontSize: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                textStyle: const TextStyle(fontSize: 16),
               ),
             ),
             if (_errorMessage.isNotEmpty)
@@ -97,7 +99,7 @@ class _SummarizePageState extends State<SummarizePage> {
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: Text(
                   _errorMessage,
-                  style: TextStyle(color: Colors.red),
+                  style: const TextStyle(color: Colors.red),
                 ),
               ),
             const SizedBox(height: 20),
@@ -107,7 +109,7 @@ class _SummarizePageState extends State<SummarizePage> {
                   width: double.infinity,
                   child: Card(
                     elevation: 4,
-                    margin: EdgeInsets.symmetric(vertical: 8.0),
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
@@ -115,7 +117,7 @@ class _SummarizePageState extends State<SummarizePage> {
                         children: [
                           Text(
                             loc.getTranslation('SUMMED_FILE'),
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                           ),
                           const SizedBox(height: 8.0),
                           Text(_summary),
