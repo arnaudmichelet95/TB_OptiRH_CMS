@@ -7,51 +7,47 @@ class SummarizePfService {
   Future<List<Map<String, dynamic>>?> pickFiles() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['docx'],
+      allowedExtensions: ['xml'],
       allowMultiple: true,
     );
 
     if (result != null) {
       return result.files.map((file) => {
         'fileName': file.name,
-        'fileBytes': file.bytes,
+        'fileBytes': base64Encode(file.bytes!), // Convertir les bytes en base64
       }).toList();
     }
     return null;
   }
 
-  Future<String> summarizeFiles(List<Map<String, dynamic>> filesData, String language) async {
+  Future<Map<String, String>> summarizeFiles(List<Map<String, dynamic>> filesData, String language) async {
     Map<String, String> headers = await APIService.header;
+    headers['Content-Type'] = 'application/json'; // Assurez-vous que le type de contenu est JSON
 
-    var request = http.MultipartRequest(
-        'POST',
-        Uri.parse('${APIService.apiURL}summarizepf/'),
+    final requestPayload = {
+      'language': language,
+      'files': filesData, // Inclure les fichiers dans le payload
+    };
+
+    final response = await http.post(
+      Uri.parse('${APIService.apiURL}summarizepf/'),
+      headers: headers,
+      body: jsonEncode(requestPayload),
     );
 
-    request.headers.addAll(headers);
-    request.fields['language'] = language;
-
-    for (var fileData in filesData) {
-        request.files.add(
-            http.MultipartFile.fromBytes(
-                'files',
-                fileData['fileBytes'],
-                filename: fileData['fileName'],
-            ),
-        );
-    }
-
-    // Log the request data
-    print("Request Files Data: $filesData");
-
-    var response = await request.send();
-
     if (response.statusCode == 200) {
-        var responseData = await response.stream.bytesToString();
-        var jsonResponse = json.decode(responseData);
-        return jsonResponse['summary'];
+      final responseJson = jsonDecode(response.body);
+      return {
+        'personal_data': responseJson['summary']['personal_data'] ?? '',
+        'case': responseJson['summary']['case'] ?? '',
+        'social_network': responseJson['summary']['social_network'] ?? '',
+        'general_info': responseJson['summary']['general_info'] ?? '',
+        'allergies': responseJson['summary']['allergies'] ?? '',
+        'medic_history': responseJson['summary']['medic_history'] ?? '',
+        'medication': responseJson['summary']['medication'] ?? '',
+      };
     } else {
-        throw Exception('Failed to summarize the files');
+      throw Exception('Failed to summarize the files');
     }
   }
 }

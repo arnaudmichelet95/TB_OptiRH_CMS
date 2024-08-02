@@ -37,10 +37,17 @@
     "OPEN_HISTORY_DRAWER": "Ouvrir l'historique",
 
     "TITLE_SUM_PAGE": "Sélectionne un dossier patient pour le résumer",
-    "PICK_DOCX": "Sélectionne un fichier .docx",
+    "PICK_XML": "Sélectionne un fichier .xml",
     "SUM_FILE": "Résumer le fichier",
     "SUMMED_FILE": "Résumé:",
     "NO_FILE_SELECTED": "Aucun fichier sélectionné",
+    "PERSONAL_DATA": "Données personnelles:",
+    "CASE": "Cas:",
+    "SOCIAL_NETWORK": "Réseau social:",
+    "GENERAL_INFO": "Informations générales:",
+    "ALLERGIES": "Allergies:",
+    "MEDIC_HISTORY": "Historique médical:",
+    "MEDICATION": "Médication:",
 
     "SIGNUP_SUCCESS_MSG": "Compte EMAIL créé avec succès, bienvenue !",
     "LOGIN_SUCCESS_MSG": "Connexion établie avec le compte EMAIL, bienvenue à nouveau !",

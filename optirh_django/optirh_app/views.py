@@ -1,3 +1,6 @@
+import base64
+import logging
+import time
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, logout, login
 from rest_framework.decorators import api_view, permission_classes
@@ -8,14 +11,13 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import authentication_classes, permission_classes
-from .simplify_translate import SimplifyTranslateHandler
+from django.core.files.uploadedfile import SimpleUploadedFile
 from .summarize_pf import SummarizePfHandler
+from .simplify_translate import SimplifyTranslateHandler
 from .serializers import AccountSerializer
 from .serializers import LlmRequestSerializer
 from .models import Account
 from .models import Llm_request
-import logging
-import time
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -26,9 +28,6 @@ def home(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_view(request):
-    """
-    Login view, used to authenticate an account on the application
-    """
     uname = request.data.get('username')
     pwd = request.data.get('password')
 
@@ -39,7 +38,6 @@ def login_view(request):
 
     if user is not None:
         login_start_time = time.time()
-        # Log in the user and create the token to allow them to access the different pages
         login(user=user, request=request)
         token, created = Token.objects.get_or_create(user=user)
         serializer = AccountSerializer(user)
@@ -50,13 +48,9 @@ def login_view(request):
     else:
         return Response({'message': 'Authentication failed'}, status=status.HTTP_401_UNAUTHORIZED)
 
-
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register_view(request):
-    """
-    Sign up view, used to create a new account on the application
-    """
     uname = request.data.get('username')
     pwd = request.data.get('password')
 
@@ -77,14 +71,10 @@ def register_view(request):
     except Exception as e:
         return Response({'message': 'User registration failed', 'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def logout_view(request):
-    """
-    Logout view, used to log out a connected account
-    """
     try:
         start_time = time.time()
         user_token = Token.objects.get(user=request.user)
@@ -98,7 +88,6 @@ def logout_view(request):
         return Response({'message': 'Token does not exist'}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return Response({'message': f'Error: {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
@@ -120,29 +109,36 @@ def simplifyTranslate_view(request):
 
     return DRFResponse({'vulgarization': vulgarization, 'term_explanation': term_explanation}, status=status.HTTP_200_OK, content_type="application/json; charset=utf-8")
 
-
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def summarize_view(request):
     try:
-        if not request.FILES.getlist('files'):
+        if not request.data.get('files'):
             return DRFResponse({'error': 'File is required.'}, status=status.HTTP_400_BAD_REQUEST)
         
         language = request.data.get('language')
         if not language:
             return DRFResponse({'error': 'Language is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        uploaded_files = request.FILES.getlist('files')
-        summarizer = SummarizePfHandler(uploaded_files)
-        summary = summarizer.summarize_pf_from_files(language)
+        uploaded_files = []
+        for file_data in request.data['files']:
+            file_name = file_data['fileName']
+            file_content = base64.b64decode(file_data['fileBytes'])
+            uploaded_file = SimpleUploadedFile(file_name, file_content)
+            uploaded_files.append(uploaded_file)
 
-        return DRFResponse({'summary': summary}, status=status.HTTP_200_OK, content_type="application/json; charset=utf-8")
+        summarizer = SummarizePfHandler(uploaded_files)
+        parsed_data = summarizer.summarize_pf_from_files(language)
+
+        for file in uploaded_files:
+            summarizer.insert_parsed_response_into_database(request.user.id, parsed_data, file.name)
+
+        return DRFResponse({'summary': parsed_data}, status=status.HTTP_200_OK, content_type="application/json; charset=utf-8")
     
     except Exception as e:
         logging.error(f"Error processing summarize request: {str(e)}")
         return DRFResponse({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])

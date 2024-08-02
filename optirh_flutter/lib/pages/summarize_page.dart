@@ -11,7 +11,13 @@ class SummarizePage extends StatefulWidget {
 
 class _SummarizePageState extends State<SummarizePage> {
   final List<Map<String, dynamic>> _filesData = [];
-  String _summary = '';
+  String _personalData = '';
+  String _case = '';
+  String _socialNetwork = '';
+  String _generalInfo = '';
+  String _allergies = '';
+  String _medicHistory = '';
+  String _medication = '';
   String _errorMessage = '';
   final TextEditingController _languageController = TextEditingController();
 
@@ -43,16 +49,29 @@ class _SummarizePageState extends State<SummarizePage> {
     });
 
     try {
-      String summary = await _service.summarizeFiles(_filesData, _languageController.text);
+      final result = await _service.summarizeFiles(_filesData, _languageController.text);
       setState(() {
-        _summary = summary;
+        _personalData = result['personal_data'] ?? 'No personal data available';
+        _case = result['case'] ?? 'No case information available';
+        _socialNetwork = result['social_network'] ?? 'No social network information available';
+        _generalInfo = result['general_info'] ?? 'No general information available';
+        _allergies = result['allergies'] ?? 'No allergies information available';
+        _medicHistory = result['medic_history'] ?? 'No medical history available';
+        _medication = result['medication'] ?? 'No medication information available';
       });
     } catch (e) {
       setState(() {
-        _summary = 'Error: $e';
+        _personalData = 'Error: $e';
+        _case = 'Error: $e';
+        _socialNetwork = 'Error: $e';
+        _generalInfo = 'Error: $e';
+        _allergies = 'Error: $e';
+        _medicHistory = 'Error: $e';
+        _medication = 'Error: $e';
       });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +86,7 @@ class _SummarizePageState extends State<SummarizePage> {
           children: <Widget>[
             ElevatedButton(
               onPressed: _pickFiles,
-              child: Text(loc.getTranslation("PICK_DOCX")),
+              child: Text(loc.getTranslation("PICK_XML")),
             ),
             const SizedBox(height: 20),
             _filesData.isNotEmpty
@@ -105,30 +124,45 @@ class _SummarizePageState extends State<SummarizePage> {
             const SizedBox(height: 20),
             Expanded(
               child: SingleChildScrollView(
-                child: Container(
-                  width: double.infinity,
-                  child: Card(
-                    elevation: 4,
-                    margin: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            loc.getTranslation('SUMMED_FILE'),
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                          const SizedBox(height: 8.0),
-                          Text(_summary),
-                        ],
-                      ),
-                    ),
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildSectionCard(loc.getTranslation('PERSONAL_DATA'), _personalData),
+                    _buildSectionCard(loc.getTranslation('CASE'), _case),
+                    _buildSectionCard(loc.getTranslation('SOCIAL_NETWORK'), _socialNetwork),
+                    _buildSectionCard(loc.getTranslation('GENERAL_INFO'), _generalInfo),
+                    _buildSectionCard(loc.getTranslation('ALLERGIES'), _allergies),
+                    _buildSectionCard(loc.getTranslation('MEDIC_HISTORY'), _medicHistory),
+                    _buildSectionCard(loc.getTranslation('MEDICATION'), _medication),
+                  ],
                 ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionCard(String title, String content) {
+    return Container(
+      width: double.infinity,
+      child: Card(
+        elevation: 4,
+        margin: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              const SizedBox(height: 8.0),
+              Text(content),
+            ],
+          ),
         ),
       ),
     );

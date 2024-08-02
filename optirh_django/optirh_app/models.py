@@ -17,8 +17,15 @@ class Llm_request(models.Model):
     def __str__(self):
         return f"Llm_request {self.id} for Account {self.fk_account.username}"
     
-class Summary_request(models.Model):
+class Sum_request(models.Model):
     file_name = models.TextField()
+    personal_data = models.TextField()
+    case = models.TextField()
+    social_network = models.TextField()
+    general_info = models.TextField()
+    allergy = models.TextField()
+    medic_history = models.TextField()
+    medication = models.TextField()
     fk_account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='fk_summary_requests_account_id')
 
     def __str__(self):
