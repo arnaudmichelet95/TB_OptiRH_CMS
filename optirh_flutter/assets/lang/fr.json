@@ -22,11 +22,6 @@
     "PASS_SPEC_NUMBERS": "1+ chiffres",
     "PASS_SPEC_SYMBOLS": "1+ caractères spéciaux (SPECIAL_CHARS)",
     "AND": "et",
-    "CONFORMITY_TEXT": "Mise en conformité nLPD",
-    "PROFILE": "Profil",
-    "DOCS": "Documents",
-    "CHECK_LIST": "Check-list",
-    "WELCOME": "Bienvenue",
 
     "TAB_VULGA": "Vulgarisation",
     "TAB_SUM": "Résumé",
