@@ -6,6 +6,7 @@ import 'package:optirh_flutter/helpers/account_manager.dart';
 import 'package:optirh_flutter/pages/login_page.dart';
 import 'package:optirh_flutter/widgets/simple_snack_bar.dart';
 import 'package:optirh_flutter/widgets/button_widget.dart';
+import 'package:provider/provider.dart';
 
 class BasePage extends StatelessWidget {
   const BasePage({super.key});
@@ -36,6 +37,7 @@ class BasePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppLocalization loc = AppLocalization.of(context);
+    final localeNotifier = Provider.of<LocaleNotifier>(context);
 
     return DefaultTabController(
       length: 2,
@@ -49,6 +51,20 @@ class BasePage extends StatelessWidget {
             ],
           ),
           actions: [
+            IconButton(
+              icon: const Icon(Icons.language),
+              onPressed: () {
+                localeNotifier.setLocale(const Locale('fr'));
+              },
+              tooltip: 'Français',
+            ),
+            IconButton(
+              icon: const Icon(Icons.language),
+              onPressed: () {
+                localeNotifier.setLocale(const Locale('de'));
+              },
+              tooltip: 'Deutsch',
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
               child: ButtonWidget(
