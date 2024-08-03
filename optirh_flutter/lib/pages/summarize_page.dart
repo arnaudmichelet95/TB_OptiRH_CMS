@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:optirh_flutter/helpers/app_localization.dart';
 import 'package:optirh_flutter/services/summarize_pf_service.dart';
+import 'package:optirh_flutter/services/summary_history_service.dart';
 
 class SummarizePage extends StatefulWidget {
   const SummarizePage({super.key});
@@ -10,6 +11,7 @@ class SummarizePage extends StatefulWidget {
 }
 
 class _SummarizePageState extends State<SummarizePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final List<Map<String, dynamic>> _filesData = [];
   String _personalData = '';
   String _case = '';
@@ -22,6 +24,28 @@ class _SummarizePageState extends State<SummarizePage> {
   final TextEditingController _languageController = TextEditingController();
 
   final SummarizePfService _service = SummarizePfService();
+  final SummaryHistoryService _historyService = SummaryHistoryService();
+
+  List<Map<String, dynamic>> _summaryHistory = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchSummaryHistory();
+  }
+
+  Future<void> _fetchSummaryHistory() async {
+    try {
+      List<Map<String, dynamic>> history = await _historyService.fetchSummaryHistory();
+      setState(() {
+        _summaryHistory = history;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Failed to load summary history: $e';
+      });
+    }
+  }
 
   Future<void> _pickFiles() async {
     var filesData = await _service.pickFiles();
@@ -72,13 +96,47 @@ class _SummarizePageState extends State<SummarizePage> {
     }
   }
 
+  void _loadSummaryDetails(Map<String, dynamic> summary) {
+    setState(() {
+      _personalData = summary['personal_data'] ?? '';
+      _case = summary['case'] ?? '';
+      _socialNetwork = summary['social_network'] ?? '';
+      _generalInfo = summary['general_info'] ?? '';
+      _allergies = summary['allergy'] ?? '';
+      _medicHistory = summary['medic_history'] ?? '';
+      _medication = summary['medication'] ?? '';
+    });
+  }
+
+  void _resetFields() {
+    setState(() {
+      _filesData.clear();
+      _languageController.clear();
+      _personalData = '';
+      _case = '';
+      _socialNetwork = '';
+      _generalInfo = '';
+      _allergies = '';
+      _medicHistory = '';
+      _medication = '';
+      _errorMessage = '';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     AppLocalization loc = AppLocalization.of(context);
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(loc.getTranslation("TITLE_SUM_PAGE")),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _resetFields,
+            tooltip: loc.getTranslation("NEW"),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -138,6 +196,31 @@ class _SummarizePageState extends State<SummarizePage> {
                 ),
               ),
             ),
+          ],
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            Container(
+              height: 60.0,
+              color: Theme.of(context).primaryColor,
+              alignment: Alignment.center,
+              child: Text(
+                loc.getTranslation("HISTORY"),
+                style: const TextStyle(color: Colors.white, fontSize: 24),
+              ),
+            ),
+            ..._summaryHistory.map((summary) {
+              return ListTile(
+                title: Text(summary['file_name']),
+                onTap: () {
+                  Navigator.pop(context);
+                  _loadSummaryDetails(summary);
+                },
+              );
+            }).toList(),
           ],
         ),
       ),

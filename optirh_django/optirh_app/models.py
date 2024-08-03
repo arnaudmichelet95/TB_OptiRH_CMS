@@ -29,4 +29,4 @@ class Sum_request(models.Model):
     fk_account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='fk_summary_requests_account_id')
 
     def __str__(self):
-        return f"Llm_request {self.id} for Account {self.fk_account.username}"
+        return f"Sum_request {self.id} for Account {self.fk_account.username}"

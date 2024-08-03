@@ -14,10 +14,9 @@ from rest_framework.decorators import authentication_classes, permission_classes
 from django.core.files.uploadedfile import SimpleUploadedFile
 from .summarize_pf import SummarizePfHandler
 from .simplify_translate import SimplifyTranslateHandler
-from .serializers import AccountSerializer
-from .serializers import LlmRequestSerializer
-from .models import Account
-from .models import Llm_request
+from .serializers import AccountSerializer, LlmRequestSerializer, SumRequestSerializer
+from .models import Account, Llm_request, Sum_request
+
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -147,5 +146,15 @@ def request_history_view(request):
     user = request.user
     requests = Llm_request.objects.filter(fk_account=user).order_by('-id')
     serializer = LlmRequestSerializer(requests, many=True)
+
+    return DRFResponse(serializer.data, status=status.HTTP_200_OK, content_type="application/json; charset=utf-8")
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def summary_history_view(request):
+    user = request.user
+    requests = Sum_request.objects.filter(fk_account=user).order_by('-id')
+    serializer = SumRequestSerializer(requests, many=True)
 
     return DRFResponse(serializer.data, status=status.HTTP_200_OK, content_type="application/json; charset=utf-8")
