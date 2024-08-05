@@ -3,3 +3,5 @@ transformers
 peft
 huggingface_hub
 argparse
+plotly==5.23.0
+pandas

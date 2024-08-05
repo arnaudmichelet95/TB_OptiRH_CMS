@@ -1,4 +1,5 @@
 import os
+import json
 import argparse
 from transformers import AutoModelForCausalLM, AutoTokenizer, logging
 from peft import PeftModel
@@ -10,14 +11,33 @@ logging.set_verbosity_debug()
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--base_model_name_or_path", type=str, default="meta-llama/Meta-Llama-3-8B", help="Path to the base model or name on Hugging Face Hub")
-    parser.add_argument("--peft_model_path", type=str, default="C:/PERSO/TB/Models/llama-8B_Healthcare", help="Path to the adapter model")
+    parser.add_argument("--base_model_name_or_path", type=str, default="unsloth/Meta-Llama-3.1-8B", help="Path to the base model or name on Hugging Face Hub")
+    parser.add_argument("--peft_model_path", type=str, default="C:/PERSO/TB/Models/adapter", help="Path to the adapter model")
     parser.add_argument("--output_dir", type=str, default="C:/PERSO/TB/Models/llama3_adapter_merged", help="Path to save the combined model")
     parser.add_argument("--push_to_hub", action="store_true", default=False, help="Flag to push the model to Hugging Face Hub")
-    parser.add_argument("--repo_name", type=str, default="amichelet95/llama3_8b_healthcare", help="Repository name on Hugging Face Hub")
+    parser.add_argument("--repo_name", type=str, default="amichelet95/llama3_8B_HealthCare_16bits", help="Repository name on Hugging Face Hub")
     parser.add_argument("--huggingface_token", type=str, help="Hugging Face token")
-
     return parser.parse_args()
+
+def validate_and_correct_config(config_path):
+    with open(config_path, 'r') as file:
+        config = json.load(file)
+    
+    rope_scaling = config.get('rope_scaling', None)
+    if rope_scaling:
+        # Validate and correct the rope_scaling field
+        if 'type' not in rope_scaling or 'factor' not in rope_scaling:
+            print("Invalid rope_scaling configuration, correcting it...")
+            correct_rope_scaling = {
+                "type": rope_scaling.get('rope_type', 'unknown'),
+                "factor": rope_scaling.get('factor', 1.0)
+            }
+            config['rope_scaling'] = correct_rope_scaling
+            with open(config_path, 'w') as file:
+                json.dump(config, file, indent=4)
+            print("Configuration corrected.")
+        else:
+            print("rope_scaling configuration is valid.")
 
 def main():
     args = get_args()
@@ -32,6 +52,10 @@ def main():
             api = HfApi()
             user = api.whoami(token=args.huggingface_token)
             print(f"Connecté en tant que {user['name']}")
+
+        # Validate and correct the base model configuration file
+        config_path = os.path.join(args.base_model_name_or_path, 'config.json')
+        validate_and_correct_config(config_path)
 
         # Charger le modèle de base depuis Hugging Face Hub
         print(f"Chargement du modèle de base depuis Hugging Face Hub ({args.base_model_name_or_path})...")
