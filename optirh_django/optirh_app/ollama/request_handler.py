@@ -5,7 +5,7 @@ class llm_request_handler:
     Handle requests to the Llama3 model hosted on an Ollama server.
     """
 
-    def __init__(self, model_name='llama3'): 
+    def __init__(self, model_name='hc_llama3_q4'): 
         self.model_name = model_name
 
     def generate_response(self, prompt):
@@ -20,6 +20,10 @@ class llm_request_handler:
         )
         for chunk in stream:
             yield chunk['message']['content']
+
+###
+# Le code ci-dessous utilise la librairie Transformers pour la génération de la réponse par le LLM fine-tuné.
+###
 
 # import torch
 # from transformers import AutoModelForCausalLM, AutoTokenizer

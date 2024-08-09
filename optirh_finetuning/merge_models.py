@@ -11,7 +11,7 @@ logging.set_verbosity_debug()
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--base_model_name_or_path", type=str, default="unsloth/Meta-Llama-3.1-8B", help="Path to the base model or name on Hugging Face Hub")
+    parser.add_argument("--base_model_name_or_path", type=str, default="C:/PERSO/TB/Models/base_model", help="Path to the base model or name on Hugging Face Hub")
     parser.add_argument("--peft_model_path", type=str, default="C:/PERSO/TB/Models/adapter", help="Path to the adapter model")
     parser.add_argument("--output_dir", type=str, default="C:/PERSO/TB/Models/llama3_adapter_merged", help="Path to save the combined model")
     parser.add_argument("--push_to_hub", action="store_true", default=False, help="Flag to push the model to Hugging Face Hub")

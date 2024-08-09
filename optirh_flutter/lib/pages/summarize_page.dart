@@ -220,7 +220,7 @@ class _SummarizePageState extends State<SummarizePage> {
                   _loadSummaryDetails(summary);
                 },
               );
-            }).toList(),
+            }),
           ],
         ),
       ),
@@ -228,7 +228,7 @@ class _SummarizePageState extends State<SummarizePage> {
   }
 
   Widget _buildSectionCard(String title, String content) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: Card(
         elevation: 4,

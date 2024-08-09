@@ -131,7 +131,7 @@ class _VulgarizationPageState extends State<VulgarizationPage> {
                   _loadRequestDetails(request);
                 },
               );
-            }).toList(),
+            }),
           ],
         ),
       ),
@@ -181,7 +181,7 @@ class _VulgarizationPageState extends State<VulgarizationPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
+                    SizedBox(
                       width: double.infinity,
                       child: Card(
                         elevation: 4,
@@ -202,7 +202,7 @@ class _VulgarizationPageState extends State<VulgarizationPage> {
                         ),
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       width: double.infinity,
                       child: Card(
                         elevation: 4,
